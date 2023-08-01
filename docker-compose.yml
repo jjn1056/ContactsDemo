@@ -1,0 +1,55 @@
+version: "3.8"
+name: contacts_demo
+services:
+  app_contacts:
+    container_name: app_contacts
+    networks:
+      - contacts_network
+    build: 
+       context: .
+       dockerfile: docker/Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - CATALYST_DEBUG=1
+      - DBIC_TRACE=1
+      - SESSION_STORAGE_SECRET=abc123
+      - CSRF_SECRET=abc123 
+      - DB_USER=contact_dbuser
+      - DB_PASSWORD=abc123
+      - DB_NAME=contacts
+      - DB_HOST=db_contacts
+      - DB_PORT=5432
+    volumes:
+      - ".:/app"
+    depends_on:
+      db_contacts:
+        condition: service_healthy
+  db_contacts:
+    container_name: db_contacts
+    networks:
+      - contacts_network
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-psql
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U contact_dbuser -d contacts"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    user: postgres
+    volumes:
+      -  db_contacts_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=contact_dbuser
+      - POSTGRES_PASSWORD=abc123
+      - POSTGRES_DB=contacts
+    ports:
+      - "5432:5432"
+volumes:
+  db_contacts_data:
+    name: db_contacts_data
+networks:
+  contacts_network:
+    name: contacts_network

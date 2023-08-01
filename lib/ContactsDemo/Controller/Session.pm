@@ -22,9 +22,6 @@ sub root :At('login/...') Via('../root') ($self, $c, $user) {
     sub build :Get('') Via('prepare_build') ($self, $c, $user) {   }
 
     sub create :Post('') Via('prepare_build') BodyModel ($self, $c, $user, $bm) {
-
-    use Devel::Dwarn;  Dwarn $bm->nested_params;
-
       return $c->authenticate($user, $bm) ?
         $c->redirect_to_action($self->post_login_action) :
           $c->view->http_bad_request;
