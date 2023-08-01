@@ -96,3 +96,6 @@ db-psql:
 
 db-shell:
 	@docker-compose exec db_contacts bash
+
+app-prove:
+	docker-compose exec app_contacts prove -lvr $(filter-out app-prove,$(MAKECMDGOALS))
