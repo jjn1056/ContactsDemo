@@ -20,15 +20,22 @@ __PACKAGE__->config(
   disable_component_resolution_regex_fallback => 1,
   using_frontend_proxy => 1,
   'Plugin::Session' => { storage_secret_key => $ENV{SESSION_STORAGE_SECRET} },
-  'Plugin::CSRFToken' => { auto_check =>1, default_secret => 'abc123' },
+  'Plugin::CSRFToken' => { auto_check =>1, default_secret => $ENV{CSRF_SECRET} },
+  'Model::Email' => {
+    transport => 'SMTP',
+    transport_args => {
+      host => $ENV{SMTP_HOST},
+      port => $ENV{SMTP_PORT},
+    },
+  },
   'Model::Schema' => {
     traits => ['SchemaProxy'],
     schema_class => 'ContactsDemo::Schema',
     connect_info => {
-      dsn => "dbi:Pg:dbname=@{[ $ENV{DB_NAME} ]};host=@{[ $ENV{DB_HOST} ]};port=@{[ $ENV{DB_PORT} ]}",
-      user => $ENV{DB_USER},
-      password => $ENV{DB_PASSWORD},
-    }
+      dsn => "dbi:Pg:dbname=@{[ $ENV{POSTGRES_DB} ]};host=@{[ $ENV{DB_HOST} ]};port=@{[ $ENV{DB_PORT} ]}",
+      user => $ENV{POSTGRES_USER},
+      password => $ENV{POSTGRES_PASSWORD},
+    },
   },
 );
 

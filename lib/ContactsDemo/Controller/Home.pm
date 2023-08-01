@@ -18,9 +18,11 @@ sub root :At('/...') Via('../public')  ($self, $c, $user) { }
 
   # This is the page we want to show if the user is logged in
   sub user_home :Get('') Via('root') Does(Authenticated) ($self, $c) {
+    $c->model('Email')->welcome('aaa@bbb.com');
+
     return $self->view
       ->add_info("Welcome to your home page!")
-      ->add_info('The time is '. localtime); # This is just to show how to use the view object
+      ->add_info('The time is: '. localtime); # This is just to show how to use the view object
   }
 
 __PACKAGE__->meta->make_immutable;

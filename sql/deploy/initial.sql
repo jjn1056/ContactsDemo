@@ -3,7 +3,7 @@
 BEGIN;
 
 CREATE TABLE person (
-  id INTEGER PRIMARY KEY NOT NULL,
+  id BIGSERIAL PRIMARY KEY,
   username varchar(48) NOT NULL,
   first_name varchar(24) NOT NULL,
   last_name varchar(48) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE person (
 CREATE UNIQUE INDEX person_username ON person (username);
 
 CREATE TABLE contact (
-  id INTEGER PRIMARY KEY NOT NULL,
+  id BIGSERIAL PRIMARY KEY,
   person_id integer NOT NULL,
   first_name varchar(24) NOT NULL,
   last_name varchar(48) NOT NULL,
@@ -22,14 +22,14 @@ CREATE TABLE contact (
 );
 
 CREATE TABLE contact_email (
-  id INTEGER PRIMARY KEY NOT NULL,
+  id BIGSERIAL PRIMARY KEY,
   contact_id integer NOT NULL,
   address varchar(96) NOT NULL,
   FOREIGN KEY (contact_id) REFERENCES contact(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE contact_phone (
-  id INTEGER PRIMARY KEY NOT NULL,
+  id BIGSERIAL PRIMARY KEY,
   contact_id integer NOT NULL,
   phone_number varchar(96) NOT NULL,
   FOREIGN KEY (contact_id) REFERENCES contact(id) ON DELETE CASCADE ON UPDATE CASCADE

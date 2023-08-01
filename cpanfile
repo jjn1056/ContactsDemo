@@ -8,12 +8,14 @@ requires 'HTTP::Headers::ActionPack';
 requires 'Server::Starter';
 requires 'Gazelle';
 
-requires 'DBD::SQLite';
 requires 'DBD::Pg';
 requires 'App::Sqitch';
 requires 'Plack';
 requires 'Type::Tiny';
 requires 'Hash::Merge';
+requires 'Email::Stuffer';
+requires 'Data::Section::Simple';
+requires 'Template::Tiny';
 
 requires 'Valiant';
 
