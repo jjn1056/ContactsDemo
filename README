@@ -1,0 +1,15 @@
+This is an example application I'm using for a series of blogs and also
+to have a good boilerplate starter for new applications.
+
+You can play with the application by running
+
+    make up
+
+on a machine that has docker installed and running.   The Web application
+will run on port 5000 and you can see the email UI on port 1080.
+
+Check 'make help' for a summary of all the commands to manage the
+containers and application but I use 'make up' and 'make stop' a lot
+to start and stop the containers and then 'make app-restart' which will
+apply any changes to the cpanfile and sqitch migrations and then HUP
+the server.  

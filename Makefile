@@ -27,6 +27,7 @@ help:
 	@echo "app-update       'make update' inside the app container"
 	@echo "app-hup          'make hup' inside the app container"
 	@echo "app-restart      'make update & make hup' inside the app container"
+	@echo "app-prove        'prove' inside the app container"
 	@echo ""
 
 # local application commands.  This should run where the Catalyst app is installed
