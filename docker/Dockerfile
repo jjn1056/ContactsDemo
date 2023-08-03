@@ -1,12 +1,16 @@
-FROM perl:5.34
+FROM perl:5.38.0
 WORKDIR /app
 
 # Core OS setup
-RUN apt-get update && apt-get install -y postgresql-client git vim
-RUN cpan App::cpanminus
+RUN apt-get update
+RUN apt-get install -y postgresql-client git vim
+
+# Clean up
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
 
 # Copy only the files needed for installing dependencies
-COPY cpanfile .
+COPY cpanfile* .
 RUN cpanm --notest --installdeps .
 
 # Copy the rest of the application source code

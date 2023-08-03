@@ -15,7 +15,7 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 __PACKAGE__->belongs_to(
-  contact => '::Result::Contact',
+  contact => '::Contact',
   { 'foreign.id' => 'self.contact_id' }
 );
 

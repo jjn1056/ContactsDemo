@@ -1,20 +1,21 @@
 FROM postgres:15.3
 
 # OS Setup
+RUN apt-get update
+RUN apt-get install -y sudo
+
+# Postgresql extension
+RUN apt-get install -y postgresql-contrib
+RUN apt-get install -y postgis postgresql-15-postgis-3
+RUN apt-get install -y postgresql-15-pgvector
+
+# Clean up
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
 
 # Make postgres user sudoer (maybe don't want this in production)
-RUN apt-get update && apt-get install -y sudo
 RUN echo "postgres        ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
 RUN sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
 
-# pgcrypto
-RUN apt-get update && apt-get install -y postgresql-contrib
-# PostGIS
-RUN apt-get update && apt-get install -y postgis postgresql-15-postgis-3
-# pg_vector
-RUN apt-get update && apt-get install -y postgresql-15-pgvector
-
 # Add the database initialization script
 ADD docker/psql/init.sql /docker-entrypoint-initdb.d
-
-

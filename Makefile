@@ -36,20 +36,12 @@ update_cpanlib:
 	@echo "Installing CPAN libs"
 	@cpanm --notest --installdeps .
 
-update_sqitch_conf:
-	@echo "Updating Sqitch config"
-	@echo '[core]' > sqitch.conf
-	@echo '    engine = pg' >> sqitch.conf
-	@echo '    top_dir = sql' >> sqitch.conf
-	@echo '    target = main' >> sqitch.conf
-	@echo '[target "main"]' >> sqitch.conf
-	@echo '    uri = db:pg:$(POSTGRES_DB)?user=$(POSTGRES_USER)&password=$(POSTGRES_PASSWORD)&host=$(DB_HOST)&port=$(DB_PORT)' >> sqitch.conf
+update_db:
+	@echo "Running database migrations"
+	@env PGHOST=$(DB_HOST) PGPORT=$(DB_PORT) PGPASSWORD=$(POSTGRES_PASSWORD) \
+	 PGUSER=$(POSTGRES_USER) PGDATABASE=$(POSTGRES_DB) sqitch deploy
 
-update_db: update_sqitch_conf
-	@echo "Deploying Sqitch"
-	@sqitch deploy
-
-update: update_cpanlib update_db
+update: update_db update_cpanlib 
 
 server: update
 	@echo "Starting demo application"
