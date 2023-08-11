@@ -48,10 +48,14 @@ server: update
 	@start_server --port 5000 --pid-file=$(PID_FILE) -- \
 		perl -Ilib \
 		./lib/ContactsDemo/PSGI.pm run \
-		--server Gazelle --max-workers 20 --max-reqs-per-child 1000 --min-reqs-per-child 800
+		--server Gazelle --max-workers 3 --max-reqs-per-child 1000 --min-reqs-per-child 800
 
 hup:
 	@kill -HUP $$(cat $(PID_FILE));
+
+server-stop:
+	@kill $$(cat $(PID_FILE));
+
 
 dependencies:
 	@ack '^use ' -h --nobreak | perl -nle'++$lines{$_}; END { print for sort grep $lines{$_}==1, keys %lines; }
@@ -81,6 +85,12 @@ app-update:
 
 app-hup:
 	@docker-compose exec app_contacts make hup
+
+app-server-stop:
+	@docker-compose exec app_contacts make server-stop
+
+app-server:
+	@docker-compose exec app_contacts make server
 
 app-restart: app-update app-hup
 

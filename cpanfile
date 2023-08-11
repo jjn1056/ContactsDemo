@@ -17,7 +17,7 @@ requires 'Email::Stuffer';
 requires 'Data::Section::Simple';
 requires 'Template::Tiny';
 
-requires 'Valiant', '0.001025';
+requires 'Valiant', '0.002001';
 
 requires 'Catalyst::Runtime', '5.90131';
 requires 'Catalyst::Plugin::RedirectTo', '0.004';

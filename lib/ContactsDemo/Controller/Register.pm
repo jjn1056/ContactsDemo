@@ -19,9 +19,7 @@ sub root :At('$path_end/...') Via('../public')  ($self, $c, $user) {
     sub build :Get('new') Via('prepare_build') ($self, $c, $user) { }
 
     sub create :Post('') Via('prepare_build') BodyModel ($self, $c, $user, $bm) {
-      return $user->register($bm) ?
-        $c->redirect_to_action('/session/build') :
-          $c->view->set_http_bad_request;
+      $c->redirect_to_action('/session/build') if $user->register($bm);
     }
 
 __PACKAGE__->meta->make_immutable; 

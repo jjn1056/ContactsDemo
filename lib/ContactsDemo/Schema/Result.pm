@@ -17,7 +17,7 @@ sub default_result_namespace { 'ContactsDemo::Schema::Result' }
 sub set_from_request($self, $request) {
   $self->set_columns_recursively($request->nested_params)
       ->insert_or_update;
-  return $self->valid;
+  return $self;
 }
 
 1;

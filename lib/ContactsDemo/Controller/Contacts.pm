@@ -11,19 +11,25 @@ extends 'ContactsDemo::Controller';
 
 # /contacts/...
 sub root :At('$path_end/...') Via('../protected')  ($self, $c, $user) {
+  $self->list_path;
+  $self->list_path({a=>1});
+
   $c->action->next(my $collection = $user->contacts);
 }
 
   # /contacts/...
   sub search :At('/...') Via('root') QueryModel ($self, $c, $collection, $query) {
-    my $sessioned_query = $c->model('Contacts::Session', $query);
-    $collection = $collection->filter_by_request($sessioned_query);
+    $collection = $collection->filter_by_request($query);
     $c->action->next($collection);
   }
 
     # GET /contacts
     sub list :Get('') Via('search') ($self, $c, $collection) {
-      return $self->view(list => $collection)->set_http_ok;
+      return $self->view(list => $collection);
+    }
+
+    sub list_path($self, @args) {
+      return $self->ctx->uri('list', @args);
     }
 
   # /contacts/...
@@ -33,15 +39,13 @@ sub root :At('$path_end/...') Via('../protected')  ($self, $c, $user) {
   }
 
     # GET /contacts/new
-    sub build :Get('/new') Via('prepare_build') ($self, $c, $new_contact) {
-      return $c->view->set_http_ok;
-    }
+    sub build :Get('/new') Via('prepare_build') ($self, $c, $new_contact) { }
 
     # POST /contacts/
     sub create :Post('') Via('prepare_build') BodyModel ($self, $c, $new_contact, $bm) {
-      return $new_contact->set_from_request($bm) ?
-        $c->view->set_http_ok : 
-          $c->view->set_http_bad_request;
+      $new_contact->set_from_request($bm) ?
+        $self->view->http_created(location=>$c->uri('edit', [$new_contact->id])) :
+          $self->view->http_ok;
     }
 
   # /contacts/{:Int}/...
@@ -68,15 +72,11 @@ sub root :At('$path_end/...') Via('../protected')  ($self, $c, $user) {
     }
 
       # GET /contacts/{:Int}/edit
-      sub edit :Get('edit') Via('prepare_edit') ($self, $c, $contact) {
-        return $c->view->set_http_ok;
-      }
+      sub edit :Get('edit') Via('prepare_edit') ($self, $c, $contact) { }
     
       # PATCH /contacts/{:Int}
       sub update :Patch('') Via('prepare_edit') BodyModelFor('create') ($self, $c, $contact, $bm) {
-        return $contact->set_from_request($bm) ?
-          $c->view->set_http_ok :
-            $c->view->set_http_bad_request;
+        return $contact->set_from_request($bm);
       }
 
 __PACKAGE__->meta->make_immutable;

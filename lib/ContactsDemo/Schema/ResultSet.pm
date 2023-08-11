@@ -13,21 +13,21 @@ __PACKAGE__->load_components(qw/
 
 # get the given page of the resultset, or last page if the requested one exceeds
 # the total number of available pages.
-sub page_or_last($self, $page) {
+sub page_or_last($self, $page = $self->pager->current_page // 1) {
   my $paged_resultset = $self->page($page);
   my $last_page = $paged_resultset->pager->last_page;
-
   $paged_resultset = $paged_resultset->page($last_page)
     if $page > $last_page;
 
   return $paged_resultset;
 }
 
-# filter a resultset by standard query model filters such as page, etc.
 sub filter_by_request($self, $request) {
   my $filtered_resultset = $self;
   if($request->can('page')) {
-    $filtered_resultset = $filtered_resultset->page_or_last($request->page // 1);
+    $filtered_resultset = $filtered_resultset->page($request->page);
+  } else {
+    $filtered_resultset = $filtered_resultset->page(1);
   }
   return $filtered_resultset;
 }

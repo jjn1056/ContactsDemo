@@ -22,9 +22,7 @@ sub root :At('login/...') Via('../root') ($self, $c, $user) {
     sub build :Get('') Via('prepare_build') ($self, $c, $user) {   }
 
     sub create :Post('') Via('prepare_build') BodyModel ($self, $c, $user, $bm) {
-      return $c->authenticate($user, $bm) ?
-        $c->redirect_to_action($self->post_login_action) :
-          $c->view->http_bad_request;
+      $c->redirect_to_action($self->post_login_action) if $c->authenticate($user, $bm);
     }
 
 sub logout :Get('logout') Via('../protected') ($self, $c, $user) {
